@@ -1,0 +1,31 @@
+<div class="modal fade bd-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-sm" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title h4" id="myExtraLargeModalLabel"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;"><span class=" text-primary">{{$curso->titulo}}</span></font></font></h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Cerca">
+          <span aria-hidden="true"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">×</font></font></span>
+        </button>
+      </div>
+      <div class="container">
+        <form action="{{route('tema.store')}}" method="POST" enctype="multipart/form-data">
+  {{ csrf_field() }}
+    <div class="form-row">
+      <div class="form-group col-md-12">
+        <input type="hidden" class="form-control" id="curso_id" name="curso_id" required value="{{$curso->id}}">
+      </div>
+       <div class="form-group col-md-3">
+          <label for="inputAddress2">Descripción</label>
+          <textarea name="descripcion" id="descripcion" rows="4" class="form-control" placeholder="Descripción del tema"  style="margin-top: 0px; margin-bottom: 0px; height: 93px;" required></textarea>
+        </div>
+    <div class="col-xs-12 col-md-12">
+          <div class="form-group">
+            <button type="submit" class="btn btn-primary"><i class="fa fa-save"></i>  Guardar</button> 
+            <button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-times"></i></i> Volver</button>
+          </div>
+    </div>
+  </form>
+      </div>
+    </div>
+  </div>
+</div>

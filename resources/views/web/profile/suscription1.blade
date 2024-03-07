@@ -1,0 +1,641 @@
+@extends('layouts.front')
+@section('titulo','Mi perfil')
+@section('content')
+  <section class="col-md-12 bg-gris" style="padding-bottom: 5%">
+    <section class="col-md-10 mx-auto">
+        <section class="col-md-6 mt-5">
+           <h2 class="font-weight">Mi cuenta</h2>
+          <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+          tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+          quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+          consequat</p>
+        </section>
+  
+    </section>
+    
+    <section class="col-md-8 mx-auto bg-white s-informacion row">
+      <form class="col-md-12 row"  action="{{route('updateuser',Auth()->user()->id)}}" method="POST" enctype="multipart/form-data">
+        {{ csrf_field() }}
+        {{ method_field('PUT') }}
+      <div class="col-xs-12 col-md-3  mb-3">
+        {{--d-flex justify-content-center align-items-center--}}
+            <div class="foto_profile">
+              @if(Auth()->user()->url_foto != null)
+                <img id="showImage" src="{{asset('fotousers/'.Auth()->user()->url_foto)}}" alt="">
+              @else
+                <img id="showImage" src="{{asset('fotousers/profile.png')}}" alt="">         
+              @endif
+              <span>
+                <div class="action">
+                  <label for="fotouser" id="ulpload-foto">Cambiar/ 100 Kb</label>
+                  <input type="file" name="perfil" id="fotouser" onchange="readImage(this);" accept="image/*" style="display: none;" class="{{ $errors->has('perfil') ? ' is-invalid' : '' }}">
+                  {{--@if ($errors->has('perfil'))
+                     <span class="invalid-feedback">
+                         <p  style="width: 80%;color:red;margin-left: 10%;text-align: center;font-weight:700">{{ $errors->first('perfil') }}</p>
+                     </span>
+                  @endif--}}
+
+                </div>
+              </span>
+            </div>
+            
+      </div>
+      <section class="col-md-9">
+      <h4 class="font-weight">Información básica</h4>
+        <section class="col-md-12 row">
+          <div class="mb-3 col-md-6">
+            <label for="name" class="form-label font-weight">Nombres</label>
+            <input type="text" class="form-control {{ $errors->has('name') ? ' is-invalid' : '' }}" name="name" value="{{Auth()->user()->name}}">
+                   @if ($errors->has('name'))
+                     <span class="invalid-feedback">
+                         <strong>{{ $errors->first('name') }}</strong>
+                     </span>
+                  @endif
+          </div>
+
+          <div class="mb-3 col-md-6">
+             <label for="last_name" class="form-label font-weight">Apellidos</label>
+                  <input type="text" class="form-control {{ $errors->has('last_name') ? ' is-invalid' : '' }}" name="last_name" value="{{Auth()->user()->last_name}}">
+                   @if ($errors->has('last_name'))
+                     <span class="invalid-feedback">
+                         <strong>{{ $errors->first('last_name') }}</strong>
+                     </span>
+                  @endif
+          </div>
+
+          <div class="mb-3 col-md-6">
+            <label for="email" class="form-label font-weight">Email</label>
+           <input type="email" class="form-control" name="email" disabled value="{{Auth()->user()->email}}">
+          </div>
+
+          <div class="mb-3 col-md-6">
+          <label for="address" class="form-label font-weight">Dirección</label>
+                  @if(strlen((Auth()->user()->address)>50))
+                  <input type="text" class="form-control" {{ $errors->has('address') ? ' is-invalid' : '' }} name="address" placeholder="define address" maxlength="50"  required="">
+                     @if ($errors->has('address'))
+                     <span class="invalid-feedback">
+                         <strong>{{ $errors->first('address') }}</strong>
+                     </span>
+                  @endif
+                  @elseif(Auth()->user()->address=="")
+                  <input type="text" class="form-control" {{ $errors->has('address') ? ' is-invalid' : '' }} name="address" placeholder="define address" maxlength="50"  required="">
+                     @if ($errors->has('address'))
+                     <span class="invalid-feedback">
+                         <strong>{{ $errors->first('address') }}</strong>
+                     </span>
+                  @endif
+                  @else
+                  <input type="text" class="form-control" {{ $errors->has('address') ? ' is-invalid' : '' }} name="address" value="{{Auth()->user()->address}}" maxlength="50" required="">
+                     @if ($errors->has('address'))
+                     <span class="invalid-feedback">
+                         <strong>{{ $errors->first('address') }}</strong>
+                     </span>
+                  @endif
+                  @endif
+          </div>
+          <div class="mb-3 col-md-6">
+             <label for="doc_number" class="form-label font-weight">N° Documento (Opcional)</label>
+                  <input type="number" class="form-control {{ $errors->has('doc_number') ? ' is-invalid' : '' }}" name="doc_number" value="{{Auth()->user()->doc_number}}">
+                   @if ($errors->has('doc_number'))
+                     <span class="invalid-feedback">
+                         <strong>{{ $errors->first('doc_number') }}</strong>
+                     </span>
+                  @endif
+          </div>
+          <div class="mb-3 col-md-6">
+             <label for="phone_number" class="form-label font-weight">N° Telf. / Movil</label>
+                  <input type="number" class="form-control {{ $errors->has('phone_number') ? ' is-invalid' : '' }}" name="phone_number" value="{{Auth()->user()->phone_number}}">
+                   @if ($errors->has('phone_number'))
+                     <span class="invalid-feedback">
+                         <strong>{{ $errors->first('phone_number') }}</strong>
+                     </span>
+                  @endif
+          </div>
+
+          <p class="text-center mt-3"><button type="submit" class="a-menu a-menu-b"  style="text-decoration: none;padding: 1% 4%">Guardar Cambios</button></p>
+           </form>
+        </section>
+      </section>
+     
+      <section class="col-md-12">
+        <p class="font-weight mt-4">Cambiar contraseña</p>
+        <form class="col-md-12 row"  action="{{route('updatepassword')}}" method="POST">
+          {{ csrf_field() }}
+        <div class="mb-3 col-md-4">
+          <label for="currentpass" class="form-label font-weight">Contraseña Actual</label>
+          <input type="password" class="form-control {{ $errors->has('currentpass') ? ' is-invalid' : '' }}" id="currentpass" name="currentpass" placeholder="Contraseña actual"> 
+          @if ($errors->has('currentpass'))
+            <span class="invalid-feedback">
+                <strong>{{ $errors->first('currentpass') }}</strong>
+            </span>
+         @endif   
+        </div>
+
+        <div class="mb-3 col-md-4">
+         <label for="newpass" class="form-label font-weight">Nueva Contraseña</label>
+          <input type="password" class="form-control {{ $errors->has('newpass') ? ' is-invalid' : '' }}" id="newpass" name="newpass" placeholder="6 caracteres alfanumericos como mínimo" >
+           @if ($errors->has('newpass'))
+             <span class="invalid-feedback">
+                 <strong>{{ $errors->first('newpass') }}</strong>
+             </span>
+          @endif  
+        </div>
+
+        <div class="mb-3 col-md-4">
+         <label for="newpass-confirm" class="form-label font-weight">Confirmar Nueva Contraseña</label>
+          <input type="password" class="form-control" id="newpass-confirm" name="newpass_confirmation" placeholder="Confirmar nueva contraseña">
+        </div>
+
+        <p class="text-center mt-3"><button class="a-menu a-menu-b" type="submit" style="text-decoration: none;padding: 1% 4%">Cambiar Contraseña</button></p>
+       </form>
+      </section>
+    </section>
+
+
+     <section class="col-md-10 mx-auto mt-5">
+        <section class="col-md-6">
+           <h4 class="font-weight">SUSCRIPCIONES ACTIVAS</h4>
+        </section>
+  
+    </section>
+   <section class="col-md-8 mx-auto bg-white s-informacion mt-5">
+        <h4 class="font-weight">Facturación y pago</h4>
+          <div class="col-md-6 row mt-4">
+            <div class="col-md-1">
+              <i class="fas fa-credit-card"></i>
+            </div>
+            <div class="col-md-11">
+            <p>Pago Depósito</p>
+            </div>
+              
+           </div>
+
+           <div class="col-md-6 row">
+            <div class="col-md-1">
+                <i class="fas fa-calendar-alt"></i>
+            </div>
+            <div class="col-md-11">
+            @if($user->suscriptorDeposito->plan->moneda=="PEN")
+            <div class="none">{{$simbolo='S/ '}}</div>
+            @else
+            <div class="none">{{$simbolo='$ '}}</div>
+            @endif
+            <p>{{$simbolo}} {{$user->suscriptorDeposito->plan->precio}} / por {{$user->suscriptorDeposito->plan->meses}} meses</p>
+            <p> Su suscripción caducará el </strong>{{date('d/m/Y',strtotime($user->suscriptorDeposito->suscription_end))}}</p>
+            <p>{{$user->suscriptorDeposito->plan->name}}</p>
+
+            </div>
+              
+           </div>
+
+           <div class="col-md-12 row mt-5">
+             <div class="col-md-2">
+               <p class="font-weight text-center">FECHA</p>
+             </div>
+             <div class="col-md-2">
+               <p class="font-weight text-center">TIPO</p>
+             </div>
+             <div class="col-md-2">
+               <p class="font-weight text-center">NÚMERO DE PEDIDO</p>
+             </div>
+             <div class="col-md-2">
+               <p class="font-weight text-center">PLANES</p>
+             </div>
+             <div class="col-md-2">
+               <p class="font-weight text-center">CANTIDAD</p>
+             </div>
+             <div class="col-md-2">
+               <p class="font-weight text-center">ACCIÓN</p>
+             </div>
+           </div>
+           <hr>
+          
+      </section>
+        
+
+        <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title blacktext" id="exampleModalLabel">Formulario de Notificación</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+                <div class="modal-body">
+                  <div class="col-md-12">
+                    <input type="hidden" name="type_id" value="2">
+                    <textarea name="body" class="form-control" rows="4" placeholder="Escriba un mensaje..."></textarea>
+                  </div>
+                </div>
+                <div class="modal-footer">
+                  <button type="submit" class="btn btn-primary">Enviar</button>
+                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                </div>
+        </div>
+     
+  </section>
+<div class="col-xs-12 col-md-9 view-text-blue">
+      
+      @if($user->isPremium() and $user->tarjeta_id=='')
+      {{--@if($user->isPremium())--}}
+      <!-- SUSCRIPCION PREMIUM -->
+        <h4 class="title">Datos de suscripción</h4>
+        <div class="suscrip-header mt-3">
+          <div class="row text-center">
+            <div class="col-md-3 p-1 plan">{{$user->suscriptorDeposito->plan->name}}</div>
+            <div class="col-md-5 p-1">
+              <span><strong>Fecha de caducidad: </strong>{{date('d/m/Y',strtotime($user->suscriptorDeposito->suscription_end))}}</span>
+            </div>
+            <div class="col-md-4 p-1">
+              <span><strong>Modalidad: </strong>{{$user->suscriptorDeposito->getTipo()}}</span>
+            </div>
+          </div>
+        </div>
+        <div class="row mt-2">
+          <div class="col-xs-12 col-md-4"></div>
+          <div class="col-xs-12 col-md-4"></div>
+          <div class="col-xs-12 col-md-4">
+            <span><strong>Mod. Último pago: </strong>{{$user->suscriptorDeposito->metodoPago->name}}</span>
+          </div>
+        </div>
+        
+        @if($user->suscriptorDeposito->currentDays() < 15)
+        <div class="row mt-4 mb-4 d-flex justify-content-center">
+            <a href="{{route('planes',$a)}}" class="btn btn-green btn-sm"><i class="fas fa-sync-alt"></i> Renovar Online</a>&nbsp;
+            <button type="button" class="btn btn-blue btn-sm" data-toggle="modal" data-target="#modal1"><i class="fas fa-sync-alt"></i> Notificar</button>
+        </div>
+        @endif
+        <div class="mt-3">
+          <h5>Lista de pagos</h5>
+          <div class="table-responsive">
+            <table class="table table-hover table-bordered">
+              <thead>
+                <th>Id</th>
+                <th>Monto</th>
+                <th>Mod. Pago</th>
+                <th>Tipo</th>
+                <th>Descripción</th>
+                <th>Comprobante</th>
+              </thead>
+
+              <tbody>
+                @foreach($user->suscriptorDeposito->pagos()->orderBy('id','desc')->get() as $pago)
+                  <tr>
+                    <td>{{$pago->id}}</td>
+                    <td>{{$pago->monto}} {{$pago->moneda}}</td>
+                    <td>{{$pago->metodoPago->name}}</td>
+                    <td>{{$pago->getTipo()}}</td>
+                    <td>{{$pago->descrip}}</td>
+                    <td>
+                      @if($pago->voucher_emit == 0)
+                      <a href="{{route('voucher.create',$pago->id)}}" class="btn btn-secondary btn-sm">Solicitar</a>
+                      @elseif($pago->voucher_emit == 1)
+                      <span>Solicitada</span>
+                      @else
+                      <span>Emitida</span>
+                      @endif
+                      
+                    </td>
+                  </tr>
+                @endforeach
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <form action="{{route('notifications.store')}}" method="POST">
+          {{ csrf_field() }}
+        <!-- Modal -->
+        <div class="modal fade" id="modal1" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div class="modal-dialog" role="document">
+            
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title blacktext" id="exampleModalLabel">Formulario de Notificación</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+                <div class="modal-body">
+                  <div class="col-md-12">
+                    <input type="hidden" name="type_id" value="2">
+                    <textarea name="body" class="form-control" rows="4" placeholder="Escriba un mensaje..."></textarea>
+                  </div>
+                </div>
+                <div class="modal-footer">
+                  <button type="submit" class="btn btn-primary">Enviar</button>
+                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+            
+          </div>
+        </div>
+        </form>
+      <!-- SUSCRIPCION PREMIUM -->
+      @elseif($user->isFree())
+      <!-- SUSCRIPCION GRATIS -->
+      <div class="bordeador">
+        <h3>Suscripción</h3>
+        <div class="container-fluid">
+          <div class="row">
+            <section class="col-xs-12 col-sm-12 col-md-6">                  
+              <span class="oranger">Plan Actual:</span> Gratis
+            </section>
+            {{-- <section class="col-xs-12 col-sm-12 col-md-6">
+              <span class="oranger">Fecha de Ingreso:</span> 01/01/2012
+            </section> --}}
+            
+          </div>
+          <div class="row valign">
+            <section class="col-12">
+              <a href="{{route('planes',$a)}}" class="btn btn-success"><i class="fas fa-user-plus"></i> Mejorar Plan</a>
+            </section>
+          </div>
+        </div>
+      </div>
+      <!-- SUSCRIPCION GRATIS -->
+      @elseif($user->isCliente())
+      <!-- CLIENTE -->
+      <div class="bordeador">
+        <div class="container-fluid">
+          <div class="row">
+            <section class="col-xs-12 col-sm-12 col-md-6">                  
+              <h4><span class="oranger">Rol:</span> {{$user->role->name}}</h4>
+            </section>
+            <section class="col-xs-12 col-sm-12 col-md-6">
+              <h4>Acceso: <span class="badge badge-secondary">{{$user->cliente->getEstado()}}</span></h4>
+              @if($user->cliente->status == 0)
+               <div class="mt-3">
+                 <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#modal2"><i class="fas fa-sync-alt"></i> Solicitar Activación</button>
+               </div>
+               <form action="{{route('notifications.store')}}" method="POST">
+                 {{ csrf_field() }}
+               <!-- Modal -->
+               <div class="modal fade" id="modal2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                 <div class="modal-dialog" role="document">
+                   
+                   <div class="modal-content">
+                     <div class="modal-header">
+                       <h5 class="modal-title blacktext" id="exampleModalLabel">Formulario de Notificación</h5>
+                       <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                         <span aria-hidden="true">&times;</span>
+                       </button>
+                     </div>
+                       <div class="modal-body">
+                         <div class="col-md-12">
+                           <input type="hidden" name="type_id" value="3">
+                           <textarea name="body" class="form-control" rows="4" placeholder="Escriba un mensaje..."></textarea>
+                         </div>
+                       </div>
+                       <div class="modal-footer">
+                         <button type="submit" class="btn btn-primary">Enviar</button>
+                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                       </div>
+                   </div>
+                   
+                 </div>
+               </div>
+               </form>
+              @endif
+            </section>
+          </div>
+        </div>
+      </div>
+      <!-- CLIEENTE -->
+      <!-- RECURRENTE-->
+           
+      @elseif($user->isPremium() and $user->tarjeta_id!='')
+          <!-- SUSCRIPCION PREMIUM -->
+        <h4 class="title">Datos de suscripción</h4>
+        <div class="suscrip-header mt-3">
+          <div class="row text-center">
+            <div class="col-md-3 p-1 plan">{{$plan->name}}</div>
+            <div class="col-md-5 p-1">
+<?php 
+  $fecha_creacion= (new DateTime())
+  ->setTimestamp( $suscripcion->creation_date/ 1000)
+  ->format('d-m-Y');
+
+  $fecha_iniciociclo= (new DateTime())
+  ->setTimestamp( $suscripcion->current_period_start/ 1000)
+  ->format('d-m-Y');    
+
+  $fecha_sigpago= (new DateTime())
+  ->setTimestamp( $suscripcion->next_billing_date/ 1000)
+  ->format('d-m-Y');
+
+?>
+              <span><strong>Siguiente pago: </strong>{{$fecha_sigpago}}</span>
+            </div>
+            <div class="col-md-4 p-1">
+              <span><strong>Modalidad: </strong>{{--$user()->suscriptorRecurrente->getTipo()--}} Revista Digital</span>
+            </div>
+          </div>
+        </div>
+     
+        <div class="mt-3">
+          <h5>Lista de pagos</h5>
+          <div class="table-responsive">
+            <table class="table table-hover table-bordered">
+              <thead>
+                <th>Fecha del pago</th>
+                <th>Monto</th>
+                <th>Mod. Pago</th>
+                <th>Tipo</th>
+                <th>Estado</th>
+                <!--<th>N° ciclo actual</th>-->
+                <th>Comprobante</th>
+              </thead>
+              <tbody id="charges">
+                <tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+         <div class="text-right">
+        <br>
+       <button type="button" class="btn btn-outline-danger" data-toggle="modal" data-target="#exampleModal">
+          Cancelar Suscripción
+        </button>
+      </div>
+        
+
+                <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" >
+                  <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <h4 class="modal-title text-center text-danger font-weight-bold" id="exampleModalLabel">¡ ADVERTENCIA !</h4>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                          <span aria-hidden="true">&times;</span>
+                        </button>
+                      </div>
+                      <div class="modal-body">
+                        <h5 class="text-warning text-center"><i class="fas fa-exclamation-triangle text-danger"></i> Si cancelas la suscripción <i class="fas fa-exclamation-triangle text-danger"></i></h5>
+                        <li>Dejarás de ser usuario <span class="font-weight-bold text-info">Premium</span></li>
+                        <li>No tendrás acceso a los <span class="font-weight-bold text-danger">videos</span> de la plataforma</li>
+                        <li>No tendrás acceso a los <span class="font-weight-bold text-danger">artículos</span> de la plataforma </li>
+                        <li>No tendrás acceso al <span class="font-weight-bold text-danger">suplemento técnico</span>  de la plataforma</li>
+                        <li>No tendrás acceso a las <span class="font-weight-bold text-danger">revistas</span>  de la plataforma </li>
+                        <li>Inmediatamente pasarás a ser <span class=" text-secondary">usuario gratuito</span></li>
+                        <br>
+                        <h5 class="font-weight-bold text-danger text-center">¿Estás seguro que quieres eliminar tu suscripción?</h5>
+
+
+                        
+                        
+                      </div>
+                      <div class="modal-footer text-center">
+                        <button type="button" class="btn btn-outline-success" data-dismiss="modal">Seguir Con el Plan</button>
+                        <a href="{{route('cancelsus')}}"  class="btn btn-outline-danger">Eliminar Suscripción</a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+        <form action="{{route('notifications.store')}}" method="POST">
+          {{ csrf_field() }}
+        <!-- Modal -->
+        <div class="modal fade" id="modal1" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div class="modal-dialog" role="document">
+            
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title blacktext" id="exampleModalLabel">Formulario de Notificación</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+                <div class="modal-body">
+                  <div class="col-md-12">
+                    <input type="hidden" name="type_id" value="2">
+                    <textarea name="body" class="form-control" rows="4" placeholder="Escriba un mensaje..."></textarea>
+                  </div>
+                </div>
+                <div class="modal-footer">
+                  <button type="submit" class="btn btn-primary">Enviar</button>
+                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+            
+          </div>
+        </div>
+        </form>
+      <!-- SUSCRIPCION PREMIUM -->
+      @elseif($user->isFree())
+      <!-- SUSCRIPCION GRATIS -->
+      <div class="bordeador">
+        <h3>Suscripción</h3>
+        <div class="container-fluid">
+          <div class="row">
+            <section class="col-xs-12 col-sm-12 col-md-6">                  
+              <span class="oranger">Plan Actual:</span> Gratis
+            </section>
+            {{-- <section class="col-xs-12 col-sm-12 col-md-6">
+              <span class="oranger">Fecha de Ingreso:</span> 01/01/2012
+            </section> --}}
+            
+          </div>
+          <div class="row valign">
+            <section class="col-12">
+              <a href="{{route('planes',$a)}}" class="btn btn-success"><i class="fas fa-user-plus"></i> Mejorar Plan</a>
+            </section>
+          </div>
+        </div>
+      </div>
+      <!-- SUSCRIPCION GRATIS -->
+      @elseif($user->isCliente())
+      <!-- CLIENTE -->
+      <div class="bordeador">
+        <div class="container-fluid">
+          <div class="row">
+            <section class="col-xs-12 col-sm-12 col-md-6">                  
+              <h4><span class="oranger">Rol:</span> {{$user->role->name}}</h4>
+            </section>
+            <section class="col-xs-12 col-sm-12 col-md-6">
+              <h4>Acceso: <span class="badge badge-secondary">{{$user->cliente->getEstado()}}</span></h4>
+              @if($user->cliente->status == 0)
+               <div class="mt-3">
+                 <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#modal2"><i class="fas fa-sync-alt"></i> Solicitar Activación</button>
+               </div>
+               <form action="{{route('notifications.store')}}" method="POST">
+                 {{ csrf_field() }}
+               <!-- Modal -->
+               <div class="modal fade" id="modal2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                 <div class="modal-dialog" role="document">
+                   
+                   <div class="modal-content">
+                     <div class="modal-header">
+                       <h5 class="modal-title blacktext" id="exampleModalLabel">Formulario de Notificación</h5>
+                       <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                         <span aria-hidden="true">&times;</span>
+                       </button>
+                     </div>
+                       <div class="modal-body">
+                         <div class="col-md-12">
+                           <input type="hidden" name="type_id" value="3">
+                           <textarea name="body" class="form-control" rows="4" placeholder="Escriba un mensaje..."></textarea>
+                         </div>
+                       </div>
+                       <div class="modal-footer">
+                         <button type="submit" class="btn btn-primary">Enviar</button>
+                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                       </div>
+                   </div>
+                   
+                 </div>
+               </div>
+               </form>
+              @endif
+            </section>
+          </div>
+        </div>
+      </div>
+    }
+      <!-- RECURRENTE -->
+      @else
+      <!-- OTROS ROLES -->
+      <div class="bordeador">
+        <div class="container-fluid">
+          <div class="row">
+            <section class="col-xs-12 col-sm-12 col-md-6">                  
+              <span class="oranger">Rol:</span> {{Auth()->user()->role->name}}
+            </section>
+            <section class="col-xs-12 col-sm-12 col-md-6">
+              <span class="oranger">No tiene suscripción<br>
+            </section>
+          </div>
+        </div>
+      </div>
+      <!-- OTROS ROLES -->
+      @endif
+       
+      
+
+    </div>
+  </div>
+</div>
+
+@endsection
+@section('script-extra')
+<script>
+  function updateProfile(form) {
+    event.preventDefault();
+    console.log(form);
+  }
+
+  function readImage(input) {
+    if (input.files && input.files[0]) {
+          let reader = new FileReader();
+
+          reader.onload = function (e) {
+              $('#showImage')
+                  .attr('src', e.target.result);
+              //toastr.info('Ahora presione Actualizar','¡Genial!');
+              console.log('Ahora presione Actualizar','¡Genial!');
+          };
+
+          reader.readAsDataURL(input.files[0]);
+    }
+  }
+</script>
+@endsection

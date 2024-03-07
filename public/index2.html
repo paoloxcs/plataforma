@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Estamos relalizando algunos cambios</title>
+</head>
+ <!-- Scrips para precarga de la pagiana -->
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.5.2/jquery.min.js"></script>
+<!-- <script>
+	//paste this code under the head tag or in a separate js file.
+		// Wait for window load
+		$(window).load(function() {
+			// Animate loader off screen
+			$(".se-pre-con").fadeOut("slow");
+		});
+</script> -->
+
+<style>
+	/*Estilo para la precarga de la pagina*/
+	*{
+		font-family: sans-serif;
+	}
+	.se-pre-con {
+		position: fixed;
+		left: 0px;
+		top: 0px;
+		width: 100%;
+		height: 100%;
+		z-index: 9999;
+		background: url(Preloader_3.gif) center no-repeat #fff;
+	}
+</style>
+<body>
+	<!--Contenedor de precarga -->
+	<div class="se-pre-con">
+	<div align="center">
+		<h4>Hola, estamos realizando algunos cambios....</h4>
+	</div>
+	</div>
+</body>
+</html>
